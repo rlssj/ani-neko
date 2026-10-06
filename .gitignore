@@ -1,0 +1,15 @@
+# HTML descargado por wget/curl durante la ejecución
+jkanime.net/
+mediafire.com/
+
+# Datos temporales
+cookies.txt
+resultados.txt
+
+# Historial local
+history.json
+history.db
+
+# Backups
+*.backup
+*.debug

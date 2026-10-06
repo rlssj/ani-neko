@@ -41,7 +41,22 @@ CLI tool powered by **mpv + fzf**
 
 ## ⚡ Instalación
 
-<details><summary>Linux</summary>
+### Instalación rápida (un solo comando)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/rlssj/ani-neko/main/install.sh | bash
+```
+
+El instalador comprueba e instala las dependencias que falten y deja `ani-neko`
+disponible en el PATH (en `~/.local/bin`, sin necesidad de sudo).
+
+Después podrás usar:
+
+```bash
+ani-neko
+```
+
+<details><summary>Linux (clonando el repositorio)</summary>
 
 ```bash
 git clone https://github.com/rlssj/ani-neko.git

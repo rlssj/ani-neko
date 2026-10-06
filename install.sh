@@ -1,4 +1,19 @@
 #!/bin/bash
+#
+# Instalador de ani-neko
+#   curl -fsSL https://raw.githubusercontent.com/rlssj/ani-neko/main/install.sh | bash
+#
+
+set -e
+
+REPO_RAW="https://raw.githubusercontent.com/rlssj/ani-neko/main"
+SCRIPT_NAME="ani-neko"
+DEPS=(curl fzf grep sed python3 mpv jq)
+
+info() { printf '\033[0;36m%s\033[0m\n' "$*"; }
+ok()   { printf '\033[0;32m%s\033[0m\n' "$*"; }
+warn() { printf '\033[0;33m%s\033[0m\n' "$*"; }
+err()  { printf '\033[0;31m%s\033[0m\n' "$*"; }
 
 detect_package_manager() {
     if command -v apt-get &> /dev/null; then
@@ -12,80 +27,81 @@ detect_package_manager() {
     elif command -v pacman &> /dev/null; then
         PKG_MANAGER="pacman"
     else
-        echo "Gestor de paquetes no soportado."
+        err "Gestor de paquetes no soportado."
+        err "Instala manualmente estas dependencias: ${DEPS[*]}"
         exit 1
     fi
 }
 
-update_system() {
-    case $PKG_MANAGER in
-        apt)
-            sudo apt-get update -y
-            ;;
-        dnf)
-            sudo dnf makecache -y
-            ;;
-        yum)
-            sudo yum makecache -y
-            ;;
-        zypper)
-            sudo zypper refresh -y
-            ;;
-        pacman)
-            sudo pacman -Sy --noconfirm
-            ;;
-    esac
-}
-
 install_package() {
     local package=$1
-
     case $PKG_MANAGER in
-        apt)
-            sudo apt-get install -y "$package"
-            ;;
-        dnf)
-            sudo dnf install -y "$package"
-            ;;
-        yum)
-            sudo yum install -y "$package"
-            ;;
-        zypper)
-            sudo zypper install -y "$package"
-            ;;
-        pacman)
-            sudo pacman -S --noconfirm "$package"
-            ;;
+        apt)    sudo apt-get install -y "$package" ;;
+        dnf)    sudo dnf install -y "$package" ;;
+        yum)    sudo yum install -y "$package" ;;
+        zypper) sudo zypper install -y "$package" ;;
+        pacman) sudo pacman -S --noconfirm "$package" ;;
     esac
 }
 
-detect_package_manager
-update_system
+# --- 1. Dependencias (solo instala las que falten) --------------------------
+missing=()
+for dep in "${DEPS[@]}"; do
+    command -v "$dep" &> /dev/null || missing+=("$dep")
+done
 
-install_package wget
-install_package fzf
-install_package grep
-install_package sed
-install_package python3
-install_package mpv
-install_package curl
-install_package jq
-
-echo "Todas las dependencias han sido instaladas correctamente."
-
-INSTALL_DIR="/usr/local/bin"
-SCRIPT_PATH="$(pwd)/ani-neko"
-
-if [ -f "$INSTALL_DIR/ani-neko" ]; then
-    echo "El script ani-neko ya existe en el PATH."
-    exit 1
+if [ ${#missing[@]} -eq 0 ]; then
+    ok "Todas las dependencias ya están instaladas."
+else
+    info "Faltan dependencias: ${missing[*]}"
+    detect_package_manager
+    if [ "$PKG_MANAGER" == "apt" ]; then
+        sudo apt-get update -y
+    elif [ "$PKG_MANAGER" == "dnf" ]; then
+        sudo dnf makecache -y
+    elif [ "$PKG_MANAGER" == "yum" ]; then
+        sudo yum makecache -y
+    elif [ "$PKG_MANAGER" == "zypper" ]; then
+        sudo zypper refresh -y
+    elif [ "$PKG_MANAGER" == "pacman" ]; then
+        sudo pacman -Sy --noconfirm
+    fi
+    for pkg in "${missing[@]}"; do
+        install_package "$pkg"
+    done
+    ok "Dependencias instaladas."
 fi
 
-sudo chmod +x ani-neko
-sudo chmod +x uninstall.sh
-sudo cp "$SCRIPT_PATH" "$INSTALL_DIR"
+# --- 2. Obtener el script (local si estamos en el repo, si no descargar) ----
+if [ -f "./$SCRIPT_NAME" ]; then
+    SRC="./$SCRIPT_NAME"
+else
+    SRC="$(mktemp)"
+    info "Descargando $SCRIPT_NAME..."
+    curl -fsSL "$REPO_RAW/$SCRIPT_NAME" -o "$SRC"
+fi
+
+# --- 3. Instalar en el PATH (sin sudo siempre que sea posible) --------------
+if mkdir -p "$HOME/.local/bin" 2> /dev/null && [ -w "$HOME/.local/bin" ]; then
+    INSTALL_DIR="$HOME/.local/bin"
+    install -m 755 "$SRC" "$INSTALL_DIR/$SCRIPT_NAME"
+else
+    INSTALL_DIR="/usr/local/bin"
+    sudo install -m 755 "$SRC" "$INSTALL_DIR/$SCRIPT_NAME"
+fi
+
+# --- 4. Avisar si el directorio no está en el PATH --------------------------
+case ":$PATH:" in
+    *":$INSTALL_DIR:"*) ;;
+    *)
+        warn ""
+        warn "Aviso: $INSTALL_DIR no está en tu PATH."
+        warn "Añade esta línea a tu ~/.bashrc (o ~/.zshrc):"
+        warn "    export PATH=\"$INSTALL_DIR:\$PATH\""
+        ;;
+esac
 
 echo ""
-clear
-echo "El script ani-neko se ha instalado correctamente en el directorio $INSTALL_DIR."
-echo "Ahora puedes ejecutar 'ani-neko' en cualquier lugar del sistema."
+ok "ani-neko instalado en $INSTALL_DIR/$SCRIPT_NAME"
+echo "Ejecuta:  $SCRIPT_NAME"
+echo "Ayuda:    $SCRIPT_NAME --help"

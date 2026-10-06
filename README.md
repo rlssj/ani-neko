@@ -4,11 +4,11 @@ Ver anime en español desde la terminal
 
 Watch anime from your terminal (Spanish subtitles)
 
-CLI tool powered by **mpv + fzf**
+CLI tool powered by **mpv + fzf**, usando [AnimeAV1](https://animeav1.com)
 
 ⚡ Rápido | 🎯 Sin anuncios | 🖥️ Ligero | ❤️ Open Source
 
-> Inspirado en ani-cli, enfocado en contenido en español
+> Inspirado en [ani-cli](https://github.com/pystardust/ani-cli) y [ani-cli-mx](https://github.com/Gildedboy/ani-cli-mx)
 
 ---
 
@@ -25,16 +25,15 @@ CLI tool powered by **mpv + fzf**
 
 ## ✨ Características
 
-* 🔍 Búsqueda de animes desde la terminal
-* 🎬 **La búsqueda incluye temporadas y secuelas**: al buscar una franquicia
-  también aparecen sus precuelas, secuelas, OVAs y películas, sin llenar la
-  lista de animes que no tienen nada que ver
+* 🔍 Búsqueda de animes desde la terminal, con **menú numerado** (`1 Death Note`,
+  `2 Death Note: Rewrite`, ...) igual que ani-cli
+* 🎬 La búsqueda incluye **temporadas, secuelas y rewrites** de la franquicia
 * 📺 Reproducción directa con **mpv**
 * ⏭️ Navegación entre episodios (siguiente / anterior)
-* 💾 Guarda automáticamente el último episodio visto
+* 💾 Guarda automáticamente el último episodio y el minuto
 * 🔄 Auto-actualización del script
 * ⚡ Interfaz interactiva con **fzf**
-* 🧠 Fallback automático entre servidores de vídeo
+* 🧠 Varios servidores con respaldo automático (HLS, Voe, MP4Upload, ...)
 * 📦 Compatible con múltiples distribuciones Linux
 
 ---
@@ -65,29 +64,15 @@ chmod +x install.sh
 ./install.sh
 ```
 
-Después podrás usar:
-
-```bash
-ani-neko
-```
-
 </details>
 
 <details><summary>Windows (WSL)</summary>
-
-Abre Powershell y pega esto
 
 ```bash
 wsl --install
 ```
 
-Reinicia el ordenador y luego en Powershell ejecuta:
-
-```bash
-wsl --install -d Ubuntu
-```
-
-Después, dentro de Ubuntu:
+Reinicia y luego, dentro de Ubuntu:
 
 ```bash
 cd ~/
@@ -98,10 +83,8 @@ chmod +x install.sh
 ```
 
 ### ⚠️ Nota sobre mpv
-Para poder usar mpv has de descargarlo desde su [página oficial](https://mpv.io/installation/)
-y añadirlo al PATH de Windows.
-
-Ya podrás ejecutarlo desde el CMD de Windows usando:
+Descarga mpv desde su [página oficial](https://mpv.io/installation/) y añádelo
+al PATH de Windows. Después:
 
 ```bash
 wsl ani-neko
@@ -140,13 +123,7 @@ Funciona en:
 * Arch Linux
 * openSUSE
 
-Gestores soportados:
-
-* `apt-get`
-* `dnf`
-* `yum`
-* `pacman`
-* `zypper`
+Gestores soportados: `apt-get`, `dnf`, `yum`, `pacman`, `zypper`.
 
 ---
 
@@ -155,7 +132,6 @@ Gestores soportados:
 * `python3`
 * `mpv`
 * `fzf`
-* `wget`
 * `curl`
 * `jq`
 * `grep`
@@ -173,7 +149,7 @@ El script guarda automáticamente:
 * Último episodio
 * El minuto en el que lo dejaste
 
-Para que puedas continuar fácilmente después.
+en `~/ani-es/history.json`.
 
 ---
 
@@ -192,20 +168,12 @@ No aloja contenido propio.
 
 ---
 
-## ❤️ Contribuir
-
-Las contribuciones son bienvenidas:
-
-* Reportar bugs
-* Sugerir features
-* Hacer pull requests
-
----
-
 ## 🙏 Créditos
 
-Basado en [ani-es](https://github.com/Zhuchii/ani-es) de **Zhuchii**,
-a su vez inspirado en [ani-cli](https://github.com/pystardust/ani-cli).
+* Fuente de datos: [AnimeAV1](https://animeav1.com)
+* Inspirado en [ani-cli](https://github.com/pystardust/ani-cli) de pystardust
+  y [ani-cli-mx](https://github.com/Gildedboy/ani-cli-mx)
+* Basado originalmente en [ani-es](https://github.com/Zhuchii/ani-es) de Zhuchii
 
 ---
 

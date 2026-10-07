@@ -60,65 +60,84 @@ ani-neko
 
 ### Instalación por distribución
 
-El instalador rápido ya cubre las distros más comunes. Si prefieres hacerlo
-manualmente, instala las dependencias con tu gestor de paquetes y luego ejecuta
-el instalador.
+*Soporte de nivel 1: Linux*
 
-| Distribución | Instalar dependencias | Instalar ani-neko |
-| --- | --- | --- |
-| **Debian / Ubuntu / Mint / Pop!_OS** | `sudo apt update && sudo apt install curl fzf python3 mpv jq grep sed` | `curl -fsSL https://raw.githubusercontent.com/rlssj/ani-neko/main/install.sh \| bash` |
-| **Fedora / RHEL / CentOS** | `sudo dnf install curl fzf python3 mpv jq grep sed` | `curl -fsSL https://raw.githubusercontent.com/rlssj/ani-neko/main/install.sh \| bash` |
-| **Arch Linux / Manjaro / EndeavourOS** | `sudo pacman -S --needed curl fzf python3 mpv jq grep sed` | `curl -fsSL https://raw.githubusercontent.com/rlssj/ani-neko/main/install.sh \| bash` |
-| **openSUSE (Leap / Tumbleweed)** | `sudo zypper install curl fzf python3 mpv jq grep sed` | `curl -fsSL https://raw.githubusercontent.com/rlssj/ani-neko/main/install.sh \| bash` |
-| **Alpine Linux** | `sudo apk add curl fzf python3 mpv jq grep sed bash` | `curl -fsSL https://raw.githubusercontent.com/rlssj/ani-neko/main/install.sh \| bash` |
-| **Void Linux** | `sudo xbps-install -S curl fzf python3 mpv jq grep sed` | `curl -fsSL https://raw.githubusercontent.com/rlssj/ani-neko/main/install.sh \| bash` |
-| **Gentoo** | `sudo emerge -a net-misc/curl app-shells/fzf dev-lang/python media-video/mpv app-misc/jq sys-apps/grep sys-apps/sed` | Clona el repo y ejecuta `./install.sh` (o copia `ani-neko` a `~/.local/bin`) |
-| **NixOS / Nix** | `nix-env -iA nixpkgs.curl nixpkgs.fzf nixpkgs.python3 nixpkgs.mpv nixpkgs.jq nixpkgs.gnugrep nixpkgs.gnused` | Clona el repo y ejecuta `./install.sh` (o copia `ani-neko` a `~/.local/bin`) |
+Si ya tienes las dependencias, el comando de arriba es suficiente. Estas
+instrucciones son para instalar todo a mano, distro por distro.
 
-<details><summary>Fedora: mpv desde RPM Fusion</summary>
+<details><summary><b>Linux</b></summary>
 
-Fedora no incluye `mpv` en sus repositorios oficiales. Habilita **RPM Fusion
-free** primero:
+#### Paquetes nativos
 
-```bash
-sudo dnf install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
-sudo dnf install mpv
+*El instalador detecta tu gestor de paquetes e instala solo lo que falte.*
+
+<details><summary>Debian / Ubuntu / Mint / Pop!_OS</summary>
+
+```sh
+sudo apt update
+sudo apt install curl fzf python3 mpv jq grep sed
 ```
 
-</details>
+</details><details><summary>Fedora / RHEL / CentOS</summary>
 
-<details><summary>openSUSE: códecs extra</summary>
+Fedora no incluye `mpv` en sus repos oficiales; habilita **RPM Fusion free**
+primero:
+
+```sh
+sudo dnf install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+sudo dnf install curl fzf python3 mpv jq grep sed
+```
+
+</details><details><summary>Arch Linux / Manjaro / EndeavourOS</summary>
+
+```sh
+sudo pacman -S --needed curl fzf python3 mpv jq grep sed
+```
+
+</details><details><summary>openSUSE Leap / Tumbleweed</summary>
 
 Para que `mpv` reproduzca todos los formatos, añade el repositorio
 [Packman](https://en.opensuse.org/Additional_package_repositories#Packman):
 
-```bash
+```sh
 sudo zypper addrepo -cfp 90 https://ftp.gwdg.de/pub/linux/misc/packman/suse/openSUSE_Tumbleweed/ packman
 sudo zypper dup --from packman --allow-vendor-change
+sudo zypper install curl fzf python3 mpv jq grep sed
 ```
 
-</details>
+</details><details><summary>Alpine Linux</summary>
 
-<details><summary>Linux (clonando el repositorio)</summary>
-
-```bash
-git clone https://github.com/rlssj/ani-neko.git
-cd ani-neko
-chmod +x install.sh
-./install.sh
+```sh
+sudo apk add curl fzf python3 mpv jq grep sed bash
 ```
 
-</details>
+</details><details><summary>Void Linux</summary>
 
-<details><summary>Windows (WSL)</summary>
+```sh
+sudo xbps-install -S curl fzf python3 mpv jq grep sed
+```
 
-```bash
+</details><details><summary>Gentoo</summary>
+
+```sh
+sudo emerge -a net-misc/curl app-shells/fzf dev-lang/python media-video/mpv app-misc/jq sys-apps/grep sys-apps/sed
+```
+
+</details><details><summary>NixOS / Nix</summary>
+
+```sh
+nix-env -iA nixpkgs.curl nixpkgs.fzf nixpkgs.python3 nixpkgs.mpv nixpkgs.jq nixpkgs.gnugrep nixpkgs.gnused
+```
+
+</details></details><details><summary><b>Windows (WSL)</b></summary>
+
+```sh
 wsl --install
 ```
 
 Reinicia y luego, dentro de Ubuntu:
 
-```bash
+```sh
 cd ~/
 git clone https://github.com/rlssj/ani-neko.git
 cd ani-neko
@@ -126,15 +145,37 @@ chmod +x install.sh
 ./install.sh
 ```
 
-### ⚠️ Nota sobre mpv
+#### Nota sobre mpv
+
 Descarga mpv desde su [página oficial](https://mpv.io/installation/) y añádelo
 al PATH de Windows. Después:
 
-```bash
+```sh
 wsl ani-neko
 ```
 
 </details>
+
+---
+
+### Instalación desde el código fuente
+
+Cualquier Linux (incluidas Gentoo y NixOS):
+
+```sh
+git clone https://github.com/rlssj/ani-neko.git
+cd ani-neko
+chmod +x install.sh
+./install.sh
+```
+
+Si tu distro no tiene uno de los gestores soportados (`apt-get`, `dnf`, `yum`,
+`pacman`, `zypper`, `apk`, `xbps-install`), instala las dependencias a mano y
+copia el script:
+
+```sh
+install -m 755 ani-neko ~/.local/bin/ani-neko
+```
 
 ---
 

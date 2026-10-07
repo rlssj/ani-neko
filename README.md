@@ -46,14 +46,58 @@ CLI tool powered by **mpv + fzf**, usando [AnimeAV1](https://animeav1.com)
 curl -fsSL https://raw.githubusercontent.com/rlssj/ani-neko/main/install.sh | bash
 ```
 
-El instalador comprueba e instala las dependencias que falten y deja `ani-neko`
-disponible en el PATH (en `~/.local/bin`, sin necesidad de sudo).
+El instalador detecta tu distribución, comprueba e instala las dependencias que
+falten y deja `ani-neko` disponible en el PATH (en `~/.local/bin`, sin necesidad
+de sudo).
 
 Después podrás usar:
 
 ```bash
 ani-neko
 ```
+
+---
+
+### Instalación por distribución
+
+El instalador rápido ya cubre las distros más comunes. Si prefieres hacerlo
+manualmente, instala las dependencias con tu gestor de paquetes y luego ejecuta
+el instalador.
+
+| Distribución | Instalar dependencias | Instalar ani-neko |
+| --- | --- | --- |
+| **Debian / Ubuntu / Mint / Pop!_OS** | `sudo apt update && sudo apt install curl fzf python3 mpv jq grep sed` | `curl -fsSL https://raw.githubusercontent.com/rlssj/ani-neko/main/install.sh \| bash` |
+| **Fedora / RHEL / CentOS** | `sudo dnf install curl fzf python3 mpv jq grep sed` | `curl -fsSL https://raw.githubusercontent.com/rlssj/ani-neko/main/install.sh \| bash` |
+| **Arch Linux / Manjaro / EndeavourOS** | `sudo pacman -S --needed curl fzf python3 mpv jq grep sed` | `curl -fsSL https://raw.githubusercontent.com/rlssj/ani-neko/main/install.sh \| bash` |
+| **openSUSE (Leap / Tumbleweed)** | `sudo zypper install curl fzf python3 mpv jq grep sed` | `curl -fsSL https://raw.githubusercontent.com/rlssj/ani-neko/main/install.sh \| bash` |
+| **Alpine Linux** | `sudo apk add curl fzf python3 mpv jq grep sed bash` | `curl -fsSL https://raw.githubusercontent.com/rlssj/ani-neko/main/install.sh \| bash` |
+| **Void Linux** | `sudo xbps-install -S curl fzf python3 mpv jq grep sed` | `curl -fsSL https://raw.githubusercontent.com/rlssj/ani-neko/main/install.sh \| bash` |
+| **Gentoo** | `sudo emerge -a net-misc/curl app-shells/fzf dev-lang/python media-video/mpv app-misc/jq sys-apps/grep sys-apps/sed` | Clona el repo y ejecuta `./install.sh` (o copia `ani-neko` a `~/.local/bin`) |
+| **NixOS / Nix** | `nix-env -iA nixpkgs.curl nixpkgs.fzf nixpkgs.python3 nixpkgs.mpv nixpkgs.jq nixpkgs.gnugrep nixpkgs.gnused` | Clona el repo y ejecuta `./install.sh` (o copia `ani-neko` a `~/.local/bin`) |
+
+<details><summary>Fedora: mpv desde RPM Fusion</summary>
+
+Fedora no incluye `mpv` en sus repositorios oficiales. Habilita **RPM Fusion
+free** primero:
+
+```bash
+sudo dnf install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+sudo dnf install mpv
+```
+
+</details>
+
+<details><summary>openSUSE: códecs extra</summary>
+
+Para que `mpv` reproduzca todos los formatos, añade el repositorio
+[Packman](https://en.opensuse.org/Additional_package_repositories#Packman):
+
+```bash
+sudo zypper addrepo -cfp 90 https://ftp.gwdg.de/pub/linux/misc/packman/suse/openSUSE_Tumbleweed/ packman
+sudo zypper dup --from packman --allow-vendor-change
+```
+
+</details>
 
 <details><summary>Linux (clonando el repositorio)</summary>
 
@@ -118,12 +162,17 @@ ani-neko -c
 
 Funciona en:
 
-* Debian / Ubuntu
+* Debian / Ubuntu / Mint / Pop!_OS
 * Fedora / RHEL / CentOS
-* Arch Linux
-* openSUSE
+* Arch Linux / Manjaro / EndeavourOS
+* openSUSE Leap / Tumbleweed
+* Alpine Linux
+* Void Linux
+* Gentoo
+* NixOS / Nix
+* Windows (WSL)
 
-Gestores soportados: `apt-get`, `dnf`, `yum`, `pacman`, `zypper`.
+Gestores soportados: `apt-get`, `dnf`, `yum`, `pacman`, `zypper`, `apk`, `xbps-install`.
 
 ---
 

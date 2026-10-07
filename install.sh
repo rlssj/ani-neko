@@ -26,6 +26,10 @@ detect_package_manager() {
         PKG_MANAGER="zypper"
     elif command -v pacman &> /dev/null; then
         PKG_MANAGER="pacman"
+    elif command -v apk &> /dev/null; then
+        PKG_MANAGER="apk"
+    elif command -v xbps-install &> /dev/null; then
+        PKG_MANAGER="xbps"
     else
         err "Gestor de paquetes no soportado."
         err "Instala manualmente estas dependencias: ${DEPS[*]}"
@@ -41,6 +45,8 @@ install_package() {
         yum)    sudo yum install -y "$package" ;;
         zypper) sudo zypper install -y "$package" ;;
         pacman) sudo pacman -S --noconfirm "$package" ;;
+        apk)    sudo apk add "$package" ;;
+        xbps)   sudo xbps-install -Sy "$package" ;;
     esac
 }
 
@@ -65,6 +71,10 @@ else
         sudo zypper refresh -y
     elif [ "$PKG_MANAGER" == "pacman" ]; then
         sudo pacman -Sy --noconfirm
+    elif [ "$PKG_MANAGER" == "apk" ]; then
+        sudo apk update
+    elif [ "$PKG_MANAGER" == "xbps" ]; then
+        sudo xbps-install -S
     fi
     for pkg in "${missing[@]}"; do
         install_package "$pkg"

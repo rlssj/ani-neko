@@ -247,7 +247,7 @@ detect_env() {
 animeav1_search() {
     curl -s -A "$UA" -L --max-time 30 --connect-timeout 10 "$ANIMEAV1/catalogo?search=$(printf '%s' "$1" | sed 's/ /+/g')" \
         | tr '\n' ' ' \
-        | sed 's|<article class="group/item|\n&|g' \
+        | awk '{ gsub(/<article class="group\/item/, "\n&"); print }' \
         | sed -nE 's|.*<h3[^>]*>([^<]+)</h3>.*href="/media/([^"/?]+)".*|\2\t\1|p'
 }
 
@@ -270,7 +270,7 @@ pick_animeav1_language() {
 extract_animeav1_entries() {
     [ -z "$1" ] && return 1
     printf '%s' "$1" | sed "s|.*$2:\\[||" \
-        | sed 's|],*[A-Z][A-Z0-9]*:\[.*||; s|]$||; s|},{|}\n{|g'
+        | sed 's|],*[A-Z][A-Z0-9]*:\[.*||; s|]$||' | awk '{ gsub(/},{/, "}\n{"); print }'
 }
 
 extract_animeav1_hls_link() {
@@ -398,7 +398,7 @@ resolve_animeav1_episode() {
 # proveedores (sun, bee, hop, bun...) por si uno cae.
 
 miruro_get() {
-    curl -s -A "$UA" -L --max-time 30 --connect-timeout 10 "$1"
+    curl -s -A "$UA" -H "Referer: $MIRURO/" -L --max-time 30 --connect-timeout 10 "$1"
 }
 
 # Busca en Miruro. Devuelve lineas "id<TAB>titulo".
@@ -424,21 +424,23 @@ for item in data:
 }
 
 # Lista de episodios de un anime (id de Miruro). Devuelve un numero por linea.
-# El /watch/ trae los episodios dentro de un script; se toman sus numeros.
+# El /watch/ trae los episodios dentro de uno de los scripts de datos
+# (__sveltekit_*.resolve(N, ...)); se toman los numeros del que tiene "episodes:[".
 miruro_episodes() {
     miruro_get "$MIRURO/watch/$1" | python3 -I -c '
 import re, sys
 h = sys.stdin.read()
-# Los episodios viven en el script de datos: los 1-2 primeros se declaran
-# antes de "episodes:[" y el resto dentro del arreglo. Se acota desde el
-# inicio de ese script hasta el siguiente (el de "resolve(2").
-i = h.find(".resolve(1")
-if i < 0:
+# Los 1-2 primeros episodios se declaran antes de "episodes:[" (a.number=1)
+# y el resto dentro del arreglo. El indice N del script cambia segun la
+# pagina, asi que se busca el bloque que contiene "episodes:[".
+k = h.find("episodes:[")
+if k < 0:
     sys.exit(0)
-j = h.find("resolve(2", i)
-seg = h[i:j if j > i else i + 200000]
+i = h.rfind(".resolve(", 0, k)
+j = h.find(".resolve(", k)
+seg = h[i if i >= 0 else 0:j if j > k else k + 2000000]
 seen = []
-for n in re.findall(r"number[:=](\d+(?:\.\d+)?)", seg):
+for n in re.findall(r"(?<![\w.])(?:[a-zA-Z]\.)?number[:=](\d+(?:\.\d+)?)", seg):
     if n not in seen:
         seen.append(n)
 seen.sort(key=lambda x: float(x))
@@ -852,7 +854,7 @@ esac
 
 save_history "$titulo_elegido" "$ep" "$pos"
 
-op=$( (echo "Siguiente"; echo "Retroceder"; echo "Atras") | tac | fzf --prompt="Selecciona una opción: " --height=7 --border --info=inline --margin=1,1,0,0)
+op=$( (echo "Atras"; echo "Retroceder"; echo "Siguiente") | fzf --prompt="Selecciona una opción: " --height=7 --border --info=inline --margin=1,1,0,0)
 
 if [[ "$op" == "Siguiente" ]]; then
     progress="00:00:00"

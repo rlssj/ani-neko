@@ -4,8 +4,7 @@ Ver anime en español desde la terminal
 
 Watch anime from your terminal (Spanish subtitles)
 
-CLI tool powered by **mpv + fzf**, usando [AnimeAV1](https://animeav1.com) y
-[Miruro](https://miruro.tv)
+CLI tool powered by **mpv/IINA + fzf**, usando [AnimeAV1](https://animeav1.com)
 
 ⚡ Rápido | 🎯 Sin anuncios | 🖥️ Ligero | ❤️ Open Source
 
@@ -17,7 +16,7 @@ CLI tool powered by **mpv + fzf**, usando [AnimeAV1](https://animeav1.com) y
 
 ---
 
-![Platforms](https://img.shields.io/badge/platform-Linux%20%7C%20Windows-blue)
+![Platforms](https://img.shields.io/badge/platform-Linux%20%7C%20macOS%20%7C%20Windows-blue)
 ![License](https://img.shields.io/github/license/rlssj/ani-neko)
 ![Made with Bash](https://img.shields.io/badge/made%20with-bash-1f425f)
 ![Uses mpv](https://img.shields.io/badge/player-mpv-orange)
@@ -36,12 +35,7 @@ CLI tool powered by **mpv + fzf**, usando [AnimeAV1](https://animeav1.com) y
 * ⚡ Interfaz interactiva con **fzf**
 * 🧠 Varios servidores con respaldo automático (HLS, Voe, MP4Upload, ...)
 * 🇯🇵 **Solo SUB**: audio siempre en japonés con subtítulos en español, nunca doblaje
-* 🌐 Dos fuentes intercambiables con `ani-neko -s`: **AnimeAV1** (por defecto) y
-  **Miruro**, que aporta **s-sub 1080p** con subtítulos en español y varios
-  hosts por si uno cae
-* 🔁 Respaldo automático: si la fuente elegida no responde (o no tiene el
-  episodio en SUB), prueba la otra sin que tengas que hacer nada
-* 📦 Compatible con múltiples distribuciones Linux
+* 📦 Compatible con Linux, macOS (Homebrew + IINA) y Windows (WSL)
 
 ---
 
@@ -62,6 +56,18 @@ Después podrás usar:
 ```bash
 ani-neko
 ```
+
+---
+
+### macOS (Homebrew)
+
+```bash
+brew tap rlssj/ani-neko https://github.com/rlssj/ani-neko.git
+brew install ani-neko && brew install --cask iina
+```
+
+En macOS se reproduce con **IINA** (si no está, usa `mpv`; puedes forzarlo con
+`ANI_NEKO_PLAYER=mpv ani-neko`). Para actualizar: `brew upgrade ani-neko`.
 
 ---
 
@@ -204,27 +210,12 @@ Continuar un anime donde lo dejaste:
 ani-neko -c
 ```
 
-Cambiar de fuente (AnimeAV1 ↔ Miruro):
-
-```bash
-ani-neko -s
-```
-
 ---
 
-## 🌐 Fuentes
+## 🌐 Fuente
 
-| Fuente      | Rol        | Calidad / subtítulos                                   |
-| ----------- | ---------- | ------------------------------------------------------ |
-| **AnimeAV1**| Por defecto| SUB (hardsub)                                          |
-| **Miruro**  | Respaldo   | **s-sub 1080p** con subtítulos externos en español, con varios hosts (sun, bee, hop, bun...) por si uno cae |
-
-* La fuente elegida se guarda en `~/ani-es/source` y se recuerda entre sesiones.
-* Si la fuente activa no responde o no tiene el episodio en SUB, **ani-neko
-  cambia sola a la otra** automáticamente.
-* Con Miruro, si hay subtítulos en español (Latinoamérica o España) se usan
-  siempre esos; si un anime antiguo no los trae, se reproduce igual el mejor
-  stream disponible.
+Todo sale de **AnimeAV1**, siempre en **SUB** (audio japonés, subtítulos en
+español incrustados). Si un episodio solo existe doblado, no se reproduce.
 
 ---
 
@@ -240,6 +231,7 @@ Funciona en:
 * Void Linux
 * Gentoo
 * NixOS / Nix
+* macOS (Homebrew)
 * Windows (WSL)
 
 Gestores soportados: `apt-get`, `dnf`, `yum`, `pacman`, `zypper`, `apk`, `xbps-install`.
@@ -249,7 +241,7 @@ Gestores soportados: `apt-get`, `dnf`, `yum`, `pacman`, `zypper`, `apk`, `xbps-i
 ## 🔧 Dependencias
 
 * `python3`
-* `mpv`
+* `mpv` (Linux/WSL) o `IINA` (macOS)
 * `fzf`
 * `curl`
 * `jq`
@@ -275,7 +267,8 @@ en `~/ani-es/history.json`.
 ## ❌ Desinstalar
 
 ```bash
-./uninstall.sh
+./uninstall.sh                # Linux / WSL
+brew uninstall ani-neko       # macOS
 ```
 
 ---
@@ -289,7 +282,7 @@ No aloja contenido propio.
 
 ## 🙏 Créditos
 
-* Fuentes de datos: [AnimeAV1](https://animeav1.com) y [Miruro](https://miruro.tv)
+* Fuente de datos: [AnimeAV1](https://animeav1.com)
 * Inspirado en [ani-cli](https://github.com/pystardust/ani-cli) de pystardust
   y [ani-cli-mx](https://github.com/Gildedboy/ani-cli-mx)
 * Basado originalmente en [ani-es](https://github.com/Zhuchii/ani-es) de Zhuchii

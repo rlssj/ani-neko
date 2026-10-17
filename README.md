@@ -63,6 +63,7 @@ ani-neko
 
 ```bash
 brew tap rlssj/ani-neko https://github.com/rlssj/ani-neko.git
+brew trust rlssj/ani-neko
 brew install ani-neko && brew install --cask iina
 ```
 
